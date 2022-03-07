@@ -386,186 +386,48 @@ Module Module1
     End Sub
 
     'Binary Trees
-    Dim root, free As String
-    Dim data(5) As String
-    Dim left(5) As String
-    Dim right(5) As String
-    Sub BinaryTreeInitialisation()
-        For i = 1 To 5
-            left(i) = "Null"
-            right(i) = "Null"
-            data(i) = ""
-        Next
+    Public Class Node
+        Public Data As String
+        Public Left As Node
+        Public Right As Node
+        Public Function getNodeData()
+            Return Data
+        End Function
+    End Class
 
-        free = 1
-        root = 0
-    End Sub
+    Public Class Binarytree
+        Public root As Node
+        Public Sub New()
+            root = Nothing
 
-    Sub BinaryTreeInsertion(ByVal newitem As String)
-        'Variables to be used
-        Dim leftcheck As Boolean = False
-        Dim rightcheck As Boolean = False
-        Dim current As String = ""
-        Dim previous As String = ""
-
-        'Place item at free position in array.
-        data(free) = newitem
-        'Set new root if inserting item at root of an empty binary tree
-        If root = 0 Then
-            root = free
-        Else
-            'Use pointer current to go to each node, starting at root.
-            current = root
-            While current <> "Null"
-                'Use pointer previous to keep track of insertion position
-                previous = current
-                If newitem < data(current) Then
-                    current = left(current)
-                    'Use boolean value to know whether inserting left of sub tree
-                    If current = "Null" Then
-                        leftcheck = True
-                    End If
-
-                Else
-                    current = right(current)
-                    'Use boolean value to know whether inserting right of sub-tree
-                    If current = "Null" Then
-                        rightcheck = True
-
-                    End If
-                End If
-            End While
-        End If
-
-        'Link the new item to the existing binary tree
-        If leftcheck = True Then
-            left(previous) = free
-
-        End If
-        If rightcheck = True Then
-            right(previous) = free
-        End If
-        'Find next free position.
-        For index = 1 To 5
-            If data(index) = "" Then
-                free = index
-                Exit For
+        End Sub
+        Public Sub Binaryinsert(ByVal stNewData As String)
+            Dim newNode As New Node()
+            newNode.Data = stNewData
+            If (root Is Nothing) Then
+                root = newNode
             Else
-                free = 0
-            End If
-        Next
-
-        rightcheck = False
-        leftcheck = False
-    End Sub
-
-    Sub BinaryTreeSearch(ByVal searchItem As String)
-        'Variables to be used
-        Dim found As Boolean = False
-        Dim current As String = ""
-        'Check if binary tree exists
-        If root = 0 Then
-            WriteLine("Empty binary tree!")
-        Else
-            'Use current pointer to go to each node,initially start at root
-            current = root
-            'Continually look for item unless there is no more nodes or has found item
-            While current <> "Null" And found = False
-                'Change boolean value to true if found.
-                If data(current) = searchItem Then
-                    found = True
-                Else
-                    'Go left if item is less than node's value, otherwise right.
-                    If searchItem < data(current) Then
-                        current = left(current)
+                Dim current As Node = root
+                Dim parent As Node
+                Do
+                    parent = current
+                    If (newNode.Data < current.Data) Then
+                        current = current.Left
+                        If (current Is Nothing) Then
+                            parent.Left = newNode
+                            Exit Do
+                        End If
                     Else
-                        current = right(current)
+                        current = current.Right
+                        If (current Is Nothing) Then
+                            parent.Right = newNode
+                            Exit Do
+                        End If
                     End If
-                End If
-            End While
-
-        End If
-        'Inform user if index of item if found, otherwise indicate item not found.
-        If found = True Then
-            WriteLine("Binary item found at: " & current)
-        Else
-            WriteLine("Binary item not found!")
-        End If
-    End Sub
-
-    Sub BinaryTreeDeletion(ByVal DelItem As String)
-        Dim found As Boolean = False
-        Dim current As String = ""
-        Dim previous As String = ""
-        Dim leftcheck As Boolean = False
-        Dim rightcheck As Boolean = False
-        If root = 0 Then
-            WriteLine("THere is no bianry tree!")
-        Else
-            current = root
-            While current <> "Null" And found = False
-                If data(current) = DelItem Then
-                    found = True
-                Else
-                    'Previous keeps track of subtree root node for insertion before current changes to null.
-                    previous = current
-                    If DelItem < data(current) Then
-                        current = left(current)
-                        leftcheck = True
-                    Else
-                        current = right(current)
-                        rightcheck = True
-                    End If
-                End If
-            End While
-        End If
-
-        If found = True Then
-            WriteLine("Item at current: " & data(current))
-            'Case 1: Node is to be a leaf node.
-            If left(current) = "Null" And right(current) = "Null" Then
-                'Set node's data to empty string to show deletion.
-                data(current) = ""
+                Loop
             End If
-            'Case 2: Node to be deleted has one child. If child of current node is at right.
-            If left(current) = "Null" And right(current) <> "Null" Then
-                'if current node is at left of parent node.
-                If leftcheck = True Then
-                    'set left of parent node to child node.
-                    left(previous) = right(current)
-                Else
-                    'Set right of parent node to child node.
-                    right(previous) = right(current)
-                End If
-                'Reset deleted node data, left and right
-                data(current) = ""
-                left(current) = "Null"
-                right(current) = "Null"
-            End If
-
-            'If child of current node is at left.
-            If right(current) = "Null" And left(current) <> "Null" Then
-                'If current node is at left of parent node.
-                If leftcheck = True Then
-                    'set left of parent node to child node.
-                    right(previous) = left(current)
-
-                End If
-                'Reset deleted node data, left and right.
-                data(current) = ""
-                left(current) = "Null"
-                right(current) = "Null"
-            End If
-            'Case 3: Deleted node ahs 2 children.
-            If left(current) <> "Null" And right(current) <> "Null" Then
-                'Required for A level!!
-            End If
-            WriteLine("Item has been deleted.")
-        Else
-            WriteLine("Item to be deletd has not been found.")
-        End If
-    End Sub
-
+        End Sub
+    End Class
     'Binary Tree Taversal.
     'Traversal is best done recursively.
     'Three depth first strategies:
@@ -1042,7 +904,7 @@ Module Module1
             'get the available file number.
             '(Generate new file number for each new operation).
             FileNumber = FreeFile()
-            FileOpen(FileNumber, "C:\Users\rossb\Desktop\Upper 6A-Lower 6A\Computer Science\Programs\ALJune\Edit.txt", OpenMode.Random, ,  , recLength)
+            FileOpen(FileNumber, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
 
             WriteLine("Please enter employee ID: ")
             EmployeeID = ReadLine()
@@ -1078,7 +940,7 @@ Module Module1
         FileNumber = FreeFile()
         'Open the new file with the FIleOpen statement. Creates file if not present.
 
-        FileOpen(FileNumber, "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
+        FileOpen(FileNumber, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
         Position = 1 'Start with 1st record.
         Do While Not (EOF(FileNumber))
             FileGet(FileNumber, Employee, Position)
@@ -1096,7 +958,7 @@ Module Module1
         Dim found As Boolean = False
         'Open the new file with the FileOpen Statement.
 
-        FileOpen(FileNumber, "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
+        FileOpen(FileNumber, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
         Do While Not EOF(FileNumber) And found = False
             FileGet(FileNumber, Employee,)
             If Employee.ID = id Then
@@ -1118,7 +980,7 @@ Module Module1
         FileNumber = FreeFile()
         'Open the new file with the FileOpen statement. Creates file if not present
 
-        FileOpen(FileNumber, "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
+        FileOpen(FileNumber, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
         'Seek() function is used to move the pointer to any position of random file.
         Seek(FileNumber, Position)
         Employee.LastName = "Alexi"
@@ -1133,10 +995,10 @@ Module Module1
         FileNumber1 = FreeFile()
         'Open the new file with the FileOpen statement. Creates file if not present.
 
-        FileOpen(FileNumber1, "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
+        FileOpen(FileNumber1, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
         FileNumber2 = FreeFile()
         'This is for temporary random file.
-        FileOpen(FileNumber2, "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
+        FileOpen(FileNumber2, "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt", OpenMode.Random, ,  , recLength)
 
         Do While Not EOF(FileNumber1)
 
@@ -1160,9 +1022,9 @@ Module Module1
         FileClose(FileNumber1)
         FileClose(FileNumber2)
         'Delete the random file.
-        Kill("C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt")
+        Kill("C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt")
         'Rename the temporary file by giving the same name as deleted random file.
-        Rename("C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/EditNew.txt", "C:/Users/rossb/Desktop/Upper 6A-Lower 6A/Computer Science/Programs/ALJune/Edit.txt")
+        Rename("C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/EditNew.txt", "C:/Users/User/Desktop/Alexi- School notes/Code Repository/TheFinalStretch/ALJune/Edit.txt")
 
     End Sub
 
