@@ -386,6 +386,7 @@ Module Module1
     End Sub
 
     'Binary Trees
+    'Simplified version of binary trees in OOP.
     Public Class Node
         Public Data As String
         Public Left As Node
@@ -399,7 +400,6 @@ Module Module1
         Public root As Node
         Public Sub New()
             root = Nothing
-
         End Sub
         Public Sub Binaryinsert(ByVal stNewData As String)
             Dim newNode As New Node()
@@ -427,6 +427,28 @@ Module Module1
                 Loop
             End If
         End Sub
+        Public Function Searchtree(ByVal FindMe As String) As String
+            Dim current As Node = root
+            Do While (current.Data <> FindMe)
+                If (FindMe < current.Data) Then
+                    current = current.Left
+                Else
+                    current = current.Right
+                End If
+                If (current Is Nothing) Then
+                    Return Nothing
+
+                End If
+            Loop
+            Return current.Data
+        End Function
+        Public Function FindMin() As String
+            Dim current As Node = root
+            While (NotifyFilters(current.Left Is Nothing))
+                current = current.Left
+            End While
+            Return current.Data
+        End Function
     End Class
     'Binary Tree Taversal.
     'Traversal is best done recursively.
