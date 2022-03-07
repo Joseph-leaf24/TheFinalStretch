@@ -442,13 +442,30 @@ Module Module1
             Loop
             Return current.Data
         End Function
+
         Public Function FindMin() As String
             Dim current As Node = root
-            While (NotifyFilters(current.Left Is Nothing))
+            While (Not (current.Left Is Nothing))
                 current = current.Left
             End While
             Return current.Data
         End Function
+
+        Public Function FindMax() As String
+            Dim current As Node = root
+            While (Not (current.Right Is Nothing))
+                current = current.Right
+            End While
+            Return current.Data
+        End Function
+
+        Public Sub Inorder(ByVal Root As Node)
+            If Not (Root Is Nothing) Then
+                Inorder(Root.Left)
+                MsgBox(Root.getNodeData)
+                Inorder(Root.Right)
+            End If
+        End Sub
     End Class
     'Binary Tree Taversal.
     'Traversal is best done recursively.
@@ -461,14 +478,14 @@ Module Module1
     'First visit the root,
     'then traverse the subtree
     'Then Traverse the right subtree.
-    Sub Pre_OrderTraversal(currentPointer)
-        WriteLine(data(currentPointer))
-        If left(currentPointer) <> 0 Then
-            Call Pre_OrderTraversal(left(currentPointer))
+    Sub Pre_OrderTraversal(current)
+        WriteLine(data(current))
+        If left(current) <> 0 Then
+            Call Pre_OrderTraversal(left(current))
 
         End If
-        If right(currentPointer) <> 0 Then
-            Call Pre_OrderTraversal(right(currentPointer))
+        If right(current) <> 0 Then
+            Call Pre_OrderTraversal(right(current))
         End If
     End Sub
 
